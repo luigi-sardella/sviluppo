@@ -1,0 +1,34 @@
+-- with "/home/luigi/gtkada-gpl-2017-x86_64-linux-bin/src/gtkada.gpr";
+-- poi ho dovuto inserire in
+--     /home/luigi/gtkada-gpl-2017-x86_64-linux-bin/src/obj/gtkada/static
+-- il file auto.cgpr prelevato da
+--     /home/luigi/gtkada-gpl-2017-x86_64-linux-bin/src/obj/gtkada/static-pic
+project passabanda1 is
+   for Source_Dirs use ("."); -- , "../sorgenti");
+   for Object_Dir use "./obj";
+   for Exec_Dir use "./exec";
+   for Main use ("passabanda");
+   package Builder is
+      for Default_Switches ("ada") use (
+         "-m",
+         "-j4",
+         "-k",
+         "-C",
+         "-gnatQ",
+         "-shared",
+         "-E");
+	 end Builder;
+	 
+   package Compiler is
+      for Default_Switches ("ada") use (
+         "-gnat05",               -- Use Ada 2005 extensions
+         "-fPIC",
+         "-gnatf",                -- Full errors. Verbose details, all undefined references
+         "-gnatU",                -- Enable unique tag for error messages
+         "-gnatwcdfijklmopruvz",  -- All warings enabled
+         "-gnatq",                -- Don't quit, try semantics, even if parse errors
+         "-gnatQ",                -- Don't quit, write ali/tree file even if compile errors
+         "-gnati1",               -- Select character set in sources.
+         "-gnatT4");              -- Compiler tables sizes 4* default
+	 end Compiler;
+end passabanda1;

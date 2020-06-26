@@ -1,0 +1,11 @@
+-- with "/home/luigi/gtkada-gpl-2017-x86_64-linux-bin/src/gtkada.gpr";
+-- poi ho dovuto inserire in
+--     /home/luigi/gtkada-gpl-2017-x86_64-linux-bin/src/obj/gtkada/static
+-- il file auto.cgpr prelevato da
+--     /home/luigi/gtkada-gpl-2017-x86_64-linux-bin/src/obj/gtkada/static-pic
+project spezia_1 is
+   for Source_Dirs use ("."); -- , "../sorgenti");
+   for Object_Dir use "./obj";
+   for Exec_Dir use "./exec";
+   for Main use ("prova_complex_1");
+end spezia_1;
