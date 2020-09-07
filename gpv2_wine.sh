@@ -1,0 +1,17 @@
+Ada_LS=~/Luigi/Sviluppo/Ada_LS;
+QUI=~/Luigi/Sviluppo/GPV2/GPV2;
+gnatchop -w $Ada_LS/LS.ada;
+gnatchop -w $Ada_LS/definizioni.ada;
+gnatchop -w $Ada_LS/solve.ada;
+gnatchop -w $Ada_LS/solve_gen.ada;
+gnatchop -w $Ada_LS/Derivate_Numeriche.ada;
+gnatchop -w $Ada_LS/vapore.ada;
+gnatchop -w $Ada_LS/utilita.ada;
+gnatchop -w $Ada_LS/jewl/jewl.ada;
+gnatchop -w $QUI/gpv2_gui.ada;
+gnatchop -w $Ada_LS/interpolazione_curve.ada;
+gnatchop -w ~/Luigi/Sviluppo/Curve_eiettori/curve_termocompressori.ada;
+gnatchop -w $QUI/gpv2_comuni.ada;
+wine gnatmake -o gpv2 gpv2;
+rm ls.ads; rm ls-*.adb; rm ls-*.ads; rm *.o; rm *.ali; rm gpv2.adb;
+rm jewl*.adb; rm jewl*.ads;
