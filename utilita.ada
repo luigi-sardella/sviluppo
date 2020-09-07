@@ -1,6 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Numerics; use Ada.Numerics;
 with Ada.Command_Line; use Ada.Command_Line;
+with GNAT.Regpat;
 with LS.Numerico; use LS.Numerico;
 with LS.Float_IO; use LS.Float_IO;
 with LS.Integer_IO; use LS.Integer_IO;
@@ -84,7 +85,9 @@ package LS.utili is -- Definizioni varie per i programmi di CFD
    function Pre_Def(Pr_D, Kont : Positive) return Positive;
    function Esiste_Il_File(File_Name : in String) return Boolean;
    function DND(Q, V : Mio_Float) return Positive;
-end LS.utili;
+   function Leggi_Dato(Dati : String; Nome : String; Predefinito : Mio_Float; Descrizione : String := " ") return Mio_Float;
+   function Leggi_Dato(Dati : String; Nome : String; Predefinito : Positive; Descrizione : String := " ") return Positive;
+end LS.Utili;
 package body LS.utili is
    function "*"(V, W : Vettore) return Vettore is
       C : Vettore := (V'Range => 0.0);
@@ -716,4 +719,29 @@ package body LS.utili is
       end loop;
       Piu_Vicina := Min(Scarti);
       return DN(Piu_Vicina.Indice);
-   end DND;end LS.utili;
+   end DND;
+   function Leggi_Dato(Dati : String; Nome : String; Predefinito : Mio_Float; Descrizione : String := " ") return Mio_Float is
+      Numero_Dec : constant String := "(\s+[+-]?\d*\.\d*[eE]?[+-]?\d*)";
+      Nome_Match : constant GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile( Nome & Numero_Dec, GNAT.Regpat.Case_Insensitive);
+      Risult : GNAT.Regpat.Match_Array(0..3);
+      Dato : Mio_Float;
+   begin
+      GNAT.Regpat.Match(Nome_Match, Dati, Risult); 
+      Dato := (if Risult(1).First > 0 and Risult(1).Last > 0 then Mio_Float'Value(Dati(Risult(1).First..Risult(1).Last)) else Predefinito);
+      Put(Nome & " = " );
+      Put(Dato, 3, 2, 0);
+      Put_Line( " : " & Descrizione);
+      return Dato;
+   end Leggi_Dato;
+   function Leggi_Dato(Dati : String; Nome : String; Predefinito : Positive; Descrizione : String := " ") return Positive is
+      Numero_Pos : constant String := "(\s+\d*)";
+      Nome_Match : constant GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile( Nome & Numero_Pos, GNAT.Regpat.Case_Insensitive);
+      Risult : GNAT.Regpat.Match_Array(0..3);
+      Dato : Positive;
+   begin
+      GNAT.Regpat.Match(Nome_Match, Dati, Risult); 
+      Dato := (if Risult(1).First > 0 and Risult(1).Last > 0 then Positive'Value(Dati(Risult(1).First..Risult(1).Last)) else Predefinito);
+      Put_Line(Nome & " = " & Dato'Img & " : " & Descrizione);
+      return Dato;
+   end Leggi_Dato;
+end LS.utili;
