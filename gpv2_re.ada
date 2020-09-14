@@ -18,12 +18,12 @@ procedure Gpv2_Re is
    
    procedure Ricopia(Dati : String) is begin
       New_Line; Put_Line("Dati del calcolo:");
-      P_Asp := Leggi_Dato(Dati, "p_asp", 50.0, " Pressione di aspirazione, mbar");
+      P_Asp := Leggi_Dato(Dati, "p_asp", 50.0, " Pressione di aspirazione, mbar", 100.0);
       T_Asp := Leggi_Dato(Dati, "t_asp", 20.0, " Temperatura all'aspirazione, gradi C");
-      P_Mot := Leggi_Dato(Dati, "p_mot", 5.0, " Pressione motrice, bar");
-      T_Mot := Leggi_Dato(Dati, "t_mot", Tem_Sat(1.0E5*P_Mot) - T0, " Temperatura del vapore motore, gradi C; predefinita quella di saturazione");
+      P_Mot := Leggi_Dato(Dati, "p_mot", 5.0, " Pressione motrice, bar", 1.0E5);
+      T_Mot := Leggi_Dato(Dati, "t_mot", Tem_Sat(P_Mot) - TK0, " Temperatura del vapore motore, gradi C; predefinita quella di saturazione");
       T_Acq := Leggi_Dato(Dati, "t_acq", 20.0, " Temperatura dell'acqua di raffreddamento, gradi C");
-      P_Fin := Leggi_Dato(Dati, "p_fin", 1050.0, " Pressione di mandata, mbar");
+      P_Fin := Leggi_Dato(Dati, "p_fin", 1050.0, " Pressione di mandata, mbar", 100.0);
       M_Vap := Leggi_Dato(Dati, "m_vap", 10.0, " Portata di vapore trascinato, kg/h");
       M_Asp := Leggi_Dato(Dati, "m_asp", 10.0, " Portata di incondensabili, kg/h");
       P_Mol := Leggi_Dato(Dati, "p_mol", 29.0, " Peso molecolare degli incondensabili");
@@ -31,14 +31,9 @@ procedure Gpv2_Re is
       Sovr := Leggi_Dato(Dati, "sovr", 0.0, " Sovrapposizione delle pressioni di mandata e aspirazione, % ");
       Kort1 := Leggi_Dato(Dati, "kort1", 10.0, " Peggioramento del 1.mo stadio rispetto alla Korting, % ");
       Kort2 := Leggi_Dato(Dati, "kort2", 5.0, " Peggioramento del 2.do stadio rispetto alla Korting, % ");
-      P_Int := Leggi_Dato(Dati, "p_int", 0.0, " Pressione intermedia, mbar");
+      P_Int := Leggi_Dato(Dati, "p_int", 0.0, " Pressione intermedia, mbar", 100.0);
       Diff_Temp := Leggi_Dato(Dati, "diff_temp", 0.0, " Subcooling (gradi C); se 0, secondo Korting");
-      Perd_Carico := Leggi_Dato(Dati, "perd_carico", 5.0, " Perdita di carico nel condensatore, mbar");
-      P_Mot := P_Mot*1.0E5;
-      P_Asp := P_Asp*100.0;
-      P_Fin := P_Fin*100.0;
-      P_Int := P_Int*100.0;
-      Perd_Carico := Perd_Carico*100.0;
+      Perd_Carico := Leggi_Dato(Dati, "perd_carico", 5.0, " Perdita di carico nel condensatore, mbar", 100.0);
       Cp := (Rgas/P_Mol)*Cost_Ad/(Cost_Ad - 1.0);
    end Ricopia;
    

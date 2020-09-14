@@ -14,7 +14,7 @@ package LS.Gpv2_Comuni is
    type M2P2T is record Mv, Mvm, Pa, Pd, Ta : Mio_Float; end record;
    package Solve_Qui is new LS.Solve1D_Gen(Reale => Mio_Float, Param => M2P2T);
    use Solve_Qui;
--- T0 : constant Mio_Float := 273.15;
+   TK0 : constant Mio_Float := 273.16;
    P_At : constant Mio_Float := 101325.0;
    Rgas : constant Mio_Float := 8314.0;
    Avogadro : constant Mio_Float := 22.4;
@@ -41,7 +41,7 @@ package body LS.Gpv2_Comuni is
       Pa : Mio_Float := Dati.Pa;
       Ta : Mio_Float := Dati.Ta;
    begin
-      return M_Asp*Cp*Td + (Mv + Mvm)*Hv_J(Pd,Td+T0) - M_Asp*Cp*Ta - Mv*Hv_J(Pa,Ta+T0) - Mvm*Hv_J(P_Mot,T_Mot+T0);
+      return M_Asp*Cp*Td + (Mv + Mvm)*Hv_J(Pd,Td + TK0) - M_Asp*Cp*Ta - Mv*Hv_J(Pa,Ta + TK0) - Mvm*Hv_J(P_Mot,T_Mot + TK0);
    end Da_Azzerare;
    function Calc_Td(Mv, Mvm, Pa, Pd, Ta: Mio_Float) return Mio_Float is
       Dati : M2P2T := (Mv => Mv, Mvm => Mvm, Pd => Pd, Pa => Pa, Ta => Ta);
@@ -65,24 +65,24 @@ package body LS.Gpv2_Comuni is
       Eq_Amb_Vap1 := M_Vap/(Correzione_PM(18.0)*Corr_Temp_Vap(T_Asp)); -- Equivalente in aria ambiente del vapore
       M_Asp1 := Eq_Amb_Vap1 + Eq_Amb_Inc1;
       Mvm1 := M_Asp1/R_Asp1;
-      Q_Asp1 := (M_Vap/18.0 + M_Asp/P_Mol)*Avogadro*(1.0 + T_Asp/T0)*(P_At/P_Asp)/3600.0;      ---------------
+      Q_Asp1 := (M_Vap/18.0 + M_Asp/P_Mol)*Avogadro*(1.0 + T_Asp/TK0)*(P_At/P_Asp)/3600.0;      ---------------
       DNS1 := LS.Utili.DND(Q_Asp1, Vel_Att);   --------------------------------
       Td1 := Calc_Td(M_Vap, Mvm1, P_Asp, Pd1, T_Asp);
-      Q_Man1 := ((M_Vap + Mvm1)/18.0 + M_Asp/P_Mol)*Avogadro*(1.0 + Td1/T0)*(P_At/Pd1)/3600.0;
+      Q_Man1 := ((M_Vap + Mvm1)/18.0 + M_Asp/P_Mol)*Avogadro*(1.0 + Td1/TK0)*(P_At/Pd1)/3600.0;
       DND1 := LS.Utili.DND(Q_Man1, Vel_Att);
       Veff_D1 := Q_Man1*4.0/(Pi*(0.001*Mio_Float(DND1))**2);
       V_Asp1 := Q_Asp1*4.0/(Pi*(0.001*Mio_Float(DNS1))**2);     ---------------------------
-      Tsat_D1 := Tem_Sat(Pd1) - T0; -- Temperatura di saturazione corrispondente alla pressione di mandata
+      Tsat_D1 := Tem_Sat(Pd1) - TK0; -- Temperatura di saturazione corrispondente alla pressione di mandata
       Tmix1 := (if Diff_Temp = 0.0 then 0.5*(T_Acq + Tsat_D1) else T_Acq + Diff_Temp); -- Temperatura all'uscita dal condensatore
-      Pvap1 := Pres_Sat(Tmix1 + T0); -- .. e corrispondente pressione parziale del vapore
+      Pvap1 := Pres_Sat(Tmix1 + TK0); -- .. e corrispondente pressione parziale del vapore
       Mv_Mi1 := 18.0*Pvap1/(P_Mol*(Ps2 - Pvap1)); -- Rapporto fra la massa di vapore trascinato e quella incondensabile
       Eq_Amb_Inc2 := M_Asp/(Correzione_PM(P_Mol)*Corr_Temp_Inc(Tmix1)); -- Equivalente in aria ambiente degli incondensabili
       Eq_Amb_Vap2 := Mv_Mi1*M_Asp/(Correzione_PM(18.0)*Corr_Temp_Vap(Tmix1)); -- Equivalente in aria ambiente del vapore
       M_Asp2 := Eq_Amb_Vap2 + Eq_Amb_Inc2;
       Mvm2 := M_Asp2/R_Asp2;
       Td2 := Calc_Td(Mv_Mi1*M_asp, Mvm2, Ps2, P_Fin, Tmix1);
-      Q_Asp2 := (Mv_Mi1*M_Asp/18.0 + M_Asp/P_Mol)*Avogadro*(1.0 + Tmix1/T0)*(P_At/Ps2)/3600.0;      ---------------
-      Q_Man2 := ((Mv_Mi1*M_asp + Mvm2)/18.0 + M_Asp/P_Mol)*Avogadro*(1.0 + Td2/T0)*(P_At/P_Fin)/3600.0;
+      Q_Asp2 := (Mv_Mi1*M_Asp/18.0 + M_Asp/P_Mol)*Avogadro*(1.0 + Tmix1/TK0)*(P_At/Ps2)/3600.0;      ---------------
+      Q_Man2 := ((Mv_Mi1*M_asp + Mvm2)/18.0 + M_Asp/P_Mol)*Avogadro*(1.0 + Td2/TK0)*(P_At/P_Fin)/3600.0;
       DND2 := LS.Utili.DND(Q_Man2, Vel_Att);
       DNS2 := LS.Utili.DND(Q_Asp2, Vel_Att);
       V_Asp2 := Q_Asp2*4.0/(Pi*(0.001*Mio_Float(DNS2))**2);     ---------------------------
@@ -101,7 +101,7 @@ package body LS.Gpv2_Comuni is
       Put("Pressione del vapore motore : "); Put(1.0E-05*P_Mot, 3, 2, 0); Put(" bara"); New_Line;
       declare
          Numero_Formattato : String(1..10);
-         Gradi_A_Satur : Mio_Float := Tem_Sat(P_Mot)  - T0;
+         Gradi_A_Satur : Mio_Float := Tem_Sat(P_Mot)  - TK0;
       begin
          Put(Numero_Formattato, Gradi_A_Satur, 4, 0);
          Put("Temperatura del vapore motore : "); Put(T_Mot, 3, 2, 0); Put(" gradi C; saturo a " & Numero_Formattato & " gradi C");
