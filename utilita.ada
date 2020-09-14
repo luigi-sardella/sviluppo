@@ -85,7 +85,7 @@ package LS.utili is -- Definizioni varie per i programmi di CFD
    function Pre_Def(Pr_D, Kont : Positive) return Positive;
    function Esiste_Il_File(File_Name : in String) return Boolean;
    function DND(Q, V : Mio_Float) return Positive;
-   function Leggi_Dato(Dati : String; Nome : String; Predefinito : Mio_Float; Descrizione : String := " ") return Mio_Float;
+   function Leggi_Dato(Dati : String; Nome : String; Predefinito : Mio_Float; Descrizione : String := " "; Moltiplicatore : Mio_Float := 1.0) return Mio_Float;
    function Leggi_Dato(Dati : String; Nome : String; Predefinito : Positive; Descrizione : String := " ") return Positive;
 end LS.Utili;
 package body LS.utili is
@@ -720,7 +720,7 @@ package body LS.utili is
       Piu_Vicina := Min(Scarti);
       return DN(Piu_Vicina.Indice);
    end DND;
-   function Leggi_Dato(Dati : String; Nome : String; Predefinito : Mio_Float; Descrizione : String := " ") return Mio_Float is
+   function Leggi_Dato(Dati : String; Nome : String; Predefinito : Mio_Float; Descrizione : String := " "; Moltiplicatore : Mio_Float := 1.0) return Mio_Float is
       Numero_Dec : constant String := "(\s+[+-]?\d*\.\d*[eE]?[+-]?\d*)";
       Nome_Match : constant GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile( Nome & Numero_Dec, GNAT.Regpat.Case_Insensitive);
       Risult : GNAT.Regpat.Match_Array(0..3);
@@ -731,7 +731,7 @@ package body LS.utili is
       Put(Nome & " = " );
       Put(Dato, 3, 2, 0);
       Put_Line( " : " & Descrizione);
-      return Dato;
+      return Dato*Moltiplicatore;
    end Leggi_Dato;
    function Leggi_Dato(Dati : String; Nome : String; Predefinito : Positive; Descrizione : String := " ") return Positive is
       Numero_Pos : constant String := "(\s+\d*)";
